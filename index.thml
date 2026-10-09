@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport". content="width=device-width, initial-scale=1">
+<title>Shipak - منصة نشر الإعلانات</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:system-ui;background:#f5f7fa}
+.header{background:#000;color:#fff;padding:20px;text-align:center;font-size:30px;font-weight:bold}
+.header span{color:#ffcc00}
+.container{max-width:1100px;margin:auto;padding:20px;width:100%}
+.card{background:#fff;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 4px 18px rgba(0,0,0,.06)}
+input,textarea,select{width:100%;padding:14px;margin:8px 0;border:1px solid #ddd;border-radius:10px;font-size:16px}
+.btn{width:100%;padding:16px;border:none;border-radius:12px;color:#fff;font-weight:bold;font-size:18px;cursor:pointer;margin-top:10px}
+.btn-black{background:#000} .btn-green{background:#25D366} .btn-blue{background:#007bff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.ad{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.06)}
+.ad img{width:100%;height:200px;object-fit:cover;background:#eee}
+.ad .info{padding:14px}
+.tag{display:inline-block;background:#ffcc00;color:#000;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:bold;margin-bottom:6px}
+.actions{display:flex;gap:8px;margin-top:12px} .actions a{flex:1;text-align:center;padding:10px;border-radius:8px;color:#fff;text-decoration:none;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="header">Shipak <span>للإعلانات</span></div>
+
+<div class="container">
+<div class="card" style="background:linear-gradient(135deg,#000,#333);color:#fff;text-align:center">
+<h1 style="margin:0;font-size:32px">انشر إعلانك الآن</h1>
+<p style="opacity:.8">نحن ننشر لك - تواصل معنا 771403568</p>
+</div>
+
+<div class="card">
+<h2>➕ إضافة إعلان جديد لعميل</h2>
+<select id="cat"><option>سيارات</option><option>عقارات</option><option>جوالات</option><option>وظائف</option><option>خدمات</option><option>عام</option></select>
+<input id="title" placeholder="عنوان الإعلان - مثال: تويوتا كامري للبيع">
+<textarea id="desc" placeholder="تفاصيل الإعلان - اكتب كل التفاصيل هنا..."></textarea>
+<input id="phone" placeholder="رقم صاحب الإعلان - مثال: 771403568">
+<input id="img" placeholder="رابط الصورة (اختياري) - اتركه فاضي لو مافي صورة">
+<button class="btn btn-black" onclick="publish()">نشر الإعلان 🚀</button>
+</div>
+
+<div class="card">
+<h2>📋 الإعلانات المنشورة</h2>
+<div class="grid" id="list"></div>
+</div>
+
+<div class="card" style="text-align:center">
+<h3>للتواصل لنشر إعلانك</h3>
+<a class="btn btn-green" href="https://wa.me/967771403568" style="text-decoration:none;display:block">💬 واتساب: 771403568</a>
+<a class="btn btn-blue" href="tel:+967771403568" style="text-decoration:none;display:block">📞 اتصال: 771403568</a>
+</div>
+</div>
+
+<script>
+let ads = JSON.parse(localStorage.getItem('shipak_ads')||'[]');
+function render(){
+ let h='';
+ ads.forEach((a,i)=>{
+  h+=`<div class="ad"><img src="${a.img||'https://via.placeholder.com/500x300?text=Shipak'}"><div class="info"><span class="tag">${a.cat}</span><div style="font-weight:bold;font-size:18px">${a.title}</div><div style="color:#444;margin:8px 0;font-size:15px;line-height:1.6">${a.desc}</div><div class="actions"><a style="background:#25D366" href="https://wa.me/967${a.phone.replace(/^0/,'')}" target="_blank">واتساب</a><a style="background:#000" href="tel:+967${a.phone.replace(/^0/,'')}">اتصال</a><a style="background:#ff3b30" onclick="del(${i})">حذف</a></div></div></div>`;
+ });
+ document.getElementById('list').innerHTML = h || '<p style="color:#888">لا يوجد إعلانات بعد - أضف أول إعلان فوق</p>';
+}
+function publish(){
+ let a={cat:cat.value, title:title.value, desc:desc.value, phone:phone.value||'771403568', img:img.value};
+ if(!a.title||!a.desc){alert('اكتب العنوان والتفاصيل');return;}
+ ads.unshift(a); localStorage.setItem('shipak_ads',JSON.stringify(ads)); render();
+ title.value=''; desc.value=''; phone.value=''; img.value=''; alert('تم النشر ✅');
+}
+function del(i){ if(confirm('تحذف الإعلان؟')){ ads.splice(i,1); localStorage.setItem('shipak_ads',JSON.stringify(ads)); render(); } }
+render();
+</script>
+</body>
+</html>
